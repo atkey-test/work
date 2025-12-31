@@ -6,27 +6,36 @@
     <title>工時計算表</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #2980b9;
-            --holiday: #c0392b;
-            --holiday-bg: #fadbd8;
-            --active-bg: #eaf2f8;
-            --bg: #f4f7f6;
+            /* 預設值 (會被 JS 覆蓋) */
+            --primary: #FF9AA2;
+            --primary-hover: #ff808b;
+            --accent: #B5EAD7;
+            --accent-text: #4a8a76;
+            --holiday: #FF6961;
+            --holiday-bg: #FFF0F0;
+            --bg: #FFF9FA;
+            --card-bg: #FFFFFF;
+            --text: #6B5B5B;
+            --border: #FFE5E5;
+            --radius: 20px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", "Segoe UI", Roboto, sans-serif;
+            font-family: 'Comic Sans MS', '微軟正黑體', 'Segoe UI', sans-serif;
             background-color: var(--bg);
             margin: 0;
             padding: 20px;
-            color: #333;
+            color: var(--text);
+            background-image: radial-gradient(var(--border) 2px, transparent 2px);
+            background-size: 30px 30px;
+            transition: background-color 0.5s ease;
         }
 
         .main-layout {
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 20px;
-            max-width: 1200px;
+            grid-template-columns: 320px 1fr;
+            gap: 25px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -35,77 +44,165 @@
         }
 
         .card {
-            background: white;
-            padding: 20px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 2px solid var(--border);
+            transition: border-color 0.5s ease;
+        }
+
+        /* --- 設定列 (新增) --- */
+        .settings-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--border);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .settings-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .settings-label {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #888;
+        }
+
+        .custom-input, .theme-select {
+            padding: 8px 12px;
+            border: 2px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            font-size: 0.95em;
+            outline: none;
+            color: var(--text);
+            background: #fff;
+            transition: 0.2s;
+        }
+        .custom-input:focus, .theme-select:focus {
+            border-color: var(--primary);
         }
 
         /* --- 左側月曆 --- */
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .calendar-header button { background: white; border: 1px solid #ddd; padding: 5px 12px; border-radius: 6px; cursor: pointer; }
-        .calendar-header button:hover { background: #f0f0f0; }
-        .calendar-title { font-weight: bold; font-size: 1.1em; color: var(--primary); }
-        
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-        .cal-head { font-size: 0.85em; color: #888; padding-bottom: 5px; }
-        .cal-cell { 
-            padding: 10px 2px; font-size: 0.95em; border-radius: 6px; position: relative; cursor: pointer;
+        .calendar-header button { 
+            background: var(--bg); border: 2px solid var(--primary); color: var(--primary);
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold;
+            transition: 0.2s;
         }
-        .cal-cell:hover { background-color: #f5f5f5; }
+        .calendar-header button:hover { background: var(--primary); color: white; }
+        .calendar-title { font-weight: bold; font-size: 1.2em; color: var(--primary); letter-spacing: 1px; }
+        
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
+        .cal-head { font-size: 0.85em; color: #aaa; padding-bottom: 5px; font-weight: bold;}
+        .cal-cell { 
+            padding: 10px 2px; font-size: 0.9em; border-radius: 12px; position: relative; cursor: pointer; transition: 0.2s;
+        }
+        .cal-cell:hover { background-color: var(--bg); transform: scale(1.1); }
         
         .is-holiday { color: var(--holiday); font-weight: bold; }
-        .is-holiday::after { content: '●'; font-size: 0.6em; display: block; margin-top: 2px; }
-        .is-active-week { background-color: var(--active-bg); color: var(--accent); font-weight: bold; }
-        .is-today { border: 2px solid var(--accent); }
+        .is-holiday::after { content: '★'; font-size: 0.6em; display: block; margin-top: 2px; color: var(--holiday); }
+        
+        .is-active-week { background-color: var(--accent); color: var(--accent-text); font-weight: bold; border-radius: 12px; }
+        .is-today { border: 2px dashed var(--primary); background: transparent; }
 
         /* --- 右側工時表 --- */
+        h2.app-title {
+            margin: 0 0 20px 0; color: var(--primary); text-align: center; font-size: 1.8em;
+            text-shadow: 2px 2px 0px var(--border);
+        }
+
         .panel-header {
             display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px dashed var(--border);
         }
         
-        .date-picker-group label { display: block; font-size: 0.9em; color: #666; margin-bottom: 5px; font-weight: bold; }
-        input[type="date"] { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; }
+        .date-picker-group label { display: block; font-size: 0.9em; color: #888; margin-bottom: 5px; font-weight: bold; }
+        input[type="date"] { 
+            padding: 8px 12px; border: 2px solid var(--border); border-radius: 12px; 
+            font-size: 1em; color: var(--text); outline: none; background: #FFF;
+        }
+        input[type="date"]:focus { border-color: var(--primary); }
 
         .btn-google {
-            background-color: #fff; color: #444; border: 1px solid #ddd;
-            padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 0.9em;
-            display: inline-flex; align-items: center; gap: 5px; transition: 0.2s;
+            background-color: #fff; color: #555; border: 2px solid #eee;
+            padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9em;
+            display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .btn-google:hover { background-color: #f8f9fa; border-color: #ccc; }
-        .btn-google img { width: 16px; height: 16px; }
+        .btn-google:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+        .btn-google img { width: 18px; height: 18px; }
 
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th { background: var(--primary); color: white; padding: 12px 5px; font-weight: normal; }
-        td { padding: 12px 5px; text-align: center; border-bottom: 1px solid #f0f0f0; }
-        th:first-child { border-top-left-radius: 8px; }
-        th:last-child { border-top-right-radius: 8px; }
-
-        .date-sub { display: block; font-size: 0.8em; color: #999; margin-top: 3px; }
-        .tag-holiday { font-size: 0.75em; padding: 2px 6px; background: var(--holiday-bg); color: var(--holiday); border-radius: 10px; margin-left: 4px; white-space: nowrap; }
-
-        /* 行狀態 */
-        tr.mode-holiday { background-color: #fdf2f2; }
-        tr.mode-leave { background-color: #f0fdf4; }
+        /* 表格樣式優化 */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-bottom: 10px; }
         
-        input[type="time"] { padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 90px; text-align: center; }
-        input.leave-inp { width: 50px; padding: 6px; border: 1px solid #3498db; border-radius: 4px; text-align: center; color: #2980b9; font-weight: bold; }
-        input[type="checkbox"] { transform: scale(1.5); cursor: pointer; accent-color: var(--holiday); }
+        th { 
+            color: #888; padding: 10px; font-size: 0.9em; font-weight: bold;
+            border-bottom: 2px solid var(--border);
+        }
+
+        tbody tr { 
+            background: white; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: 0.2s;
+        }
+        tbody tr:hover { transform: scale(1.01); }
+
+        td { padding: 12px 5px; text-align: center; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
+        td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+
+        .date-wrapper {
+            display: flex; align-items: center; justify-content: flex-start; gap: 8px; padding-left: 10px;
+        }
+        .date-main { font-size: 1.1em; font-weight: bold; color: var(--text); }
+        .date-day { font-size: 0.9em; color: #aaa; background: #f5f5f5; padding: 2px 8px; border-radius: 10px; }
+        .tag-holiday { font-size: 0.8em; padding: 3px 8px; background: var(--holiday); color: white; border-radius: 15px; white-space: nowrap; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
+
+        tr.mode-holiday td { background-color: var(--holiday-bg); border-color: var(--border); }
+        tr.mode-leave td { background-color: var(--bg); border-color: var(--border); }
+        
+        input { font-family: inherit; }
+        input[type="time"] { 
+            padding: 6px; border: 1px solid #ddd; border-radius: 10px; width: 90px; 
+            text-align: center; background: #fdfdfd; color: var(--text);
+        }
+        input.leave-inp { 
+            width: 50px; padding: 6px; border: 1px solid var(--accent); border-radius: 10px; 
+            text-align: center; color: var(--accent-text); font-weight: bold; background: #fafffc;
+        }
+        input[type="checkbox"] { 
+            appearance: none; width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; position: relative;
+        }
+        input[type="checkbox"]:checked { background-color: var(--holiday); border-color: var(--holiday); }
+        input[type="checkbox"]:checked::after { content: '✔'; color: white; position: absolute; left: 3px; top: -1px; font-size: 14px;}
 
         /* 底部統計 */
         .summary {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
-            background: var(--primary); color: white; padding: 20px; border-radius: 10px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;
         }
-        .sum-val { font-size: 1.8em; font-weight: bold; margin-top: 5px; }
-        .sum-lbl { font-size: 0.9em; opacity: 0.8; }
-        .highlight { color: #f1c40f; }
+        .sum-card {
+            padding: 15px; border-radius: 15px; color: white; text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            /* 預設背景，JS會根據主題微調 */
+            background: var(--primary); 
+            opacity: 0.9;
+        }
+        
+        .sum-val { font-size: 1.6em; font-weight: bold; margin-top: 5px; }
+        .sum-lbl { font-size: 0.9em; opacity: 0.9; }
         
         .reset-btn {
-            background: none; border: none; color: #e74c3c; cursor: pointer; 
-            font-size: 0.85em; text-decoration: underline; margin-top: 5px;
+            background: none; border: none; color: #aaa; cursor: pointer; 
+            font-size: 0.85em; margin-top: 15px; transition: 0.2s;
         }
+        .reset-btn:hover { color: var(--holiday); text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -119,37 +216,57 @@
         </div>
         <div class="cal-grid" id="calGrid"></div>
         
-        <div style="margin-top:20px; padding-top:15px; border-top:1px solid #eee; font-size:0.9em; line-height:1.6; color:#666;">
-            <strong>📌 系統說明：</strong><br>
-            • <span style="color:var(--holiday);">● 紅字</span> 為內建國定假日 (2025-2026)。<br>
-            • 系統會自動將國定假日設為「全日假」。<br>
-            • 若需查詢您的私人行程，請點擊右方按鈕。
+        <div style="margin-top:20px; padding-top:15px; border-top:2px dashed var(--border); font-size:0.85em; line-height:1.6; color:#888;">
+            <div style="margin-bottom:5px;">📅 <b>小提醒：</b></div>
+            • <span style="color:var(--holiday);">★ 紅字</span> 是國定假日喔<br>
+            • 深色背景是正在編輯的週<br>
         </div>
     </div>
 
     <div class="card">
+        <div class="settings-bar">
+            <div class="settings-input-group">
+                <span class="settings-label">使用者:</span>
+                <input type="text" id="userNameInput" class="custom-input" placeholder="輸入您的名字" oninput="updateTitle()">
+            </div>
+            <div class="settings-input-group">
+                <span class="settings-label">樣式:</span>
+                <select id="themeSelect" class="theme-select" onchange="changeTheme(this.value)">
+                    <option value="pink">🌸 甜心馬卡龍</option>
+                    <option value="blue">🌊 清爽海洋</option>
+                    <option value="green">🍃 護眼森林</option>
+                    <option value="purple">🔮 優雅薰衣草</option>
+                    <option value="mono">🎱 極簡黑白</option>
+                </select>
+            </div>
+        </div>
+
+        <h2 class="app-title" id="mainTitle">工時計算表</h2>
+        
         <div class="panel-header">
             <div class="date-picker-group">
                 <label>選擇本週 (週一)</label>
-                <input type="date" id="weekStart" onchange="onWeekChange()">
-                <button class="reset-btn" onclick="jumpToToday()">回到本週</button>
+                <div style="display:flex; gap:10px;">
+                    <input type="date" id="weekStart" onchange="onWeekChange()">
+                    <button onclick="jumpToToday()" style="background:var(--accent); border:none; border-radius:10px; color:var(--accent-text); cursor:pointer; padding:0 12px; font-weight:bold;">今天</button>
+                </div>
             </div>
             
             <a href="https://calendar.google.com/" target="_blank" class="btn-google">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google">
-                開啟 Google 日曆核對
+                Google 日曆
             </a>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th width="20%">日期</th>
+                    <th width="28%" style="text-align:left; padding-left:20px;">日期</th>
                     <th>上班</th>
                     <th>下班</th>
                     <th>午休</th>
                     <th>請假</th>
-                    <th>全日假</th>
+                    <th>休假</th>
                     <th>工時</th>
                 </tr>
             </thead>
@@ -157,34 +274,67 @@
         </table>
 
         <div class="summary">
-            <div>
-                <div class="sum-lbl">本週工時 (含假)</div>
+            <div class="sum-card" style="background: linear-gradient(135deg, var(--primary), #ddd);">
+                <div class="sum-lbl">本週工時</div>
                 <div class="sum-val" id="sumTotal">0.00</div>
             </div>
-            <div>
-                <div class="sum-lbl">距離 40H 還差</div>
+            <div class="sum-card" style="background: linear-gradient(135deg, var(--accent), #eee); color:var(--accent-text);">
+                <div class="sum-lbl">距離 40H</div>
                 <div class="sum-val" id="sumLeft">0.00</div>
             </div>
-            <div>
-                <div class="sum-lbl">週五建議下班</div>
-                <div class="sum-val highlight" id="predict">--:--</div>
+            <div class="sum-card" style="background: linear-gradient(135deg, #FFDAC1, #FFDFD3); color:#8a6b4e;">
+                <div class="sum-lbl">週五下班</div>
+                <div class="sum-val" id="predict">--:--</div>
             </div>
         </div>
         
-        <div style="text-align:right; margin-top:10px;">
-            <button class="reset-btn" onclick="resetData()">↻ 重置本週數據 (恢復預設)</button>
+        <div style="text-align:center;">
+            <button class="reset-btn" onclick="resetData()">↻ 重置本週 (恢復預設)</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 1. 內建精準國定假日資料庫 (2025-2026) ---
-    // 格式：MM-DD
+    // --- 0. 樣式定義 ---
+    const THEMES = {
+        pink: { // 原始粉色
+            '--primary': '#FF9AA2', '--primary-hover': '#ff808b',
+            '--accent': '#B5EAD7', '--accent-text': '#4a8a76',
+            '--holiday': '#FF6961', '--holiday-bg': '#FFF0F0',
+            '--bg': '#FFF9FA', '--text': '#6B5B5B', '--border': '#FFE5E5'
+        },
+        blue: { // 藍色系
+            '--primary': '#4FC3F7', '--primary-hover': '#29B6F6',
+            '--accent': '#FFF59D', '--accent-text': '#F57F17',
+            '--holiday': '#E57373', '--holiday-bg': '#FFEBEE',
+            '--bg': '#E1F5FE', '--text': '#455A64', '--border': '#B3E5FC'
+        },
+        green: { // 綠色系
+            '--primary': '#66BB6A', '--primary-hover': '#43A047',
+            '--accent': '#FFCC80', '--accent-text': '#E65100',
+            '--holiday': '#FF7043', '--holiday-bg': '#FBE9E7',
+            '--bg': '#F1F8E9', '--text': '#33691E', '--border': '#C5E1A5'
+        },
+        purple: { // 紫色系
+            '--primary': '#CE93D8', '--primary-hover': '#BA68C8',
+            '--accent': '#B2DFDB', '--accent-text': '#00695C',
+            '--holiday': '#F48FB1', '--holiday-bg': '#FCE4EC',
+            '--bg': '#F3E5F5', '--text': '#4A148C', '--border': '#E1BEE7'
+        },
+        mono: { // 黑白極簡
+            '--primary': '#757575', '--primary-hover': '#424242',
+            '--accent': '#BDBDBD', '--accent-text': '#000000',
+            '--holiday': '#000000', '--holiday-bg': '#EEEEEE',
+            '--bg': '#FAFAFA', '--text': '#212121', '--border': '#E0E0E0'
+        }
+    };
+
+    // --- 1. 內建國定假日 (2025-2026) ---
     const HOLIDAYS_DB = {
         '2025': {
             '01-01': '元旦',
             '01-27': '除夕補假', '01-28': '春節', '01-29': '春節', '01-30': '春節', '01-31': '春節',
-            '02-28': '228紀念日',
+            '02-28': '228',
             '04-03': '兒童節', '04-04': '清明節',
             '05-01': '勞動節',
             '05-30': '端午連假',
@@ -200,21 +350,19 @@
             '06-19': '端午連假',
             '09-25': '中秋連假',
             '10-09': '國慶補假',
-            '12-25': '行憲紀念日' // 根據2026預測可能恢復或調整，先列入
+            '12-25': '行憲紀念日'
         }
     };
 
-    const CONFIG = {
-        LUNCH_START: 12 * 60,
-        LUNCH_END: 13 * 60,
-        TARGET: 40
-    };
-
-    let viewDate = new Date(); // 月曆當前檢視月份
+    const CONFIG = { LUNCH_START: 12 * 60, LUNCH_END: 13 * 60, TARGET: 40 };
+    let viewDate = new Date();
 
     // --- 2. 初始化 ---
     window.onload = function() {
-        const last = localStorage.getItem('mylog_last_week');
+        // 載入使用者設定
+        loadSettings();
+
+        const last = localStorage.getItem('elia_log_last');
         if (last) {
             document.getElementById('weekStart').value = last;
             viewDate = new Date(last);
@@ -224,10 +372,52 @@
         refreshAll(false);
     };
 
+    // --- 新增: 設定載入與處理 ---
+    function loadSettings() {
+        const savedName = localStorage.getItem('ws_username');
+        const savedTheme = localStorage.getItem('ws_theme') || 'pink';
+        
+        if(savedName) {
+            document.getElementById('userNameInput').value = savedName;
+            updateTitle();
+        }
+        
+        document.getElementById('themeSelect').value = savedTheme;
+        changeTheme(savedTheme);
+    }
+
+    function updateTitle() {
+        const name = document.getElementById('userNameInput').value;
+        const titleEl = document.getElementById('mainTitle');
+        const browserTitle = document.querySelector('title');
+        
+        if (name && name.trim() !== '') {
+            titleEl.textContent = `${name} 的工時計算表`;
+            browserTitle.textContent = `${name} 的工時表`;
+            localStorage.setItem('ws_username', name);
+        } else {
+            titleEl.textContent = "工時計算表";
+            browserTitle.textContent = "工時計算表";
+            localStorage.removeItem('ws_username');
+        }
+    }
+
+    function changeTheme(themeKey) {
+        const theme = THEMES[themeKey];
+        if(!theme) return;
+        
+        const root = document.documentElement;
+        for (const [key, value] of Object.entries(theme)) {
+            root.style.setProperty(key, value);
+        }
+        localStorage.setItem('ws_theme', themeKey);
+    }
+    // --- 結束新增 ---
+
     function jumpToToday() {
         const d = new Date();
         const day = d.getDay();
-        const diff = d.getDate() - day + (day == 0 ? -6 : 1); // 調整至週一
+        const diff = d.getDate() - day + (day == 0 ? -6 : 1);
         const monday = new Date(d.setDate(diff));
         document.getElementById('weekStart').value = toISODate(monday);
         viewDate = new Date();
@@ -237,7 +427,7 @@
     function onWeekChange() {
         const val = document.getElementById('weekStart').value;
         if(val) {
-            localStorage.setItem('mylog_last_week', val);
+            localStorage.setItem('elia_log_last', val);
             viewDate = new Date(val);
             refreshAll();
         }
@@ -254,7 +444,7 @@
         loadAndCalc(save);
     }
 
-    // --- 3. 核心邏輯：表格渲染與計算 ---
+    // --- 3. 渲染與計算 ---
     function renderTable() {
         const tbody = document.getElementById('tbody');
         tbody.innerHTML = '';
@@ -273,17 +463,22 @@
             const tr = document.createElement('tr');
             tr.dataset.date = iso;
             
-            let dateHTML = `${wDays[i]} <span class="date-sub">${iso.slice(5)}</span>`;
-            if(holName) dateHTML += `<span class="tag-holiday">${holName}</span>`;
+            let dateHTML = `
+                <div class="date-wrapper">
+                    <span class="date-main">${iso.slice(5)}</span>
+                    <span class="date-day">${wDays[i]}</span>
+                    ${holName ? `<span class="tag-holiday">${holName}</span>` : ''}
+                </div>
+            `;
 
             tr.innerHTML = `
-                <td style="text-align:left; padding-left:10px;">${dateHTML}</td>
+                <td style="text-align:left;">${dateHTML}</td>
                 <td><input type="time" class="inp-s" value="09:00" onchange="update()"></td>
                 <td><input type="time" class="inp-e" value="18:00" onchange="update()"></td>
                 <td style="color:#aaa; font-size:0.8em;">-1H</td>
                 <td><input type="number" class="inp-l leave-inp" min="0" max="8" step="0.5" onchange="update()"></td>
                 <td><input type="checkbox" class="inp-h" onchange="update()"></td>
-                <td class="res-h" style="font-weight:bold;">0.00</td>
+                <td class="res-h" style="font-weight:bold; color:var(--text);">0.00</td>
             `;
             tbody.appendChild(tr);
         }
@@ -312,8 +507,8 @@
 
             if (isHol) {
                 tr.classList.add('mode-holiday');
-                dayMins = 480; // 8H
-                res.textContent = "假 8H";
+                dayMins = 480; 
+                res.textContent = "8H";
                 inps.forEach(k => k.disabled = true);
                 tr.querySelector('.inp-s').style.opacity = 0.3;
             } else {
@@ -338,7 +533,7 @@
         const left = Math.max(0, CONFIG.TARGET * 60 - total);
         document.getElementById('sumLeft').textContent = (left/60).toFixed(2);
 
-        // Predict Friday
+        // Predict
         const fRow = rows[4];
         const fHol = fRow.querySelector('.inp-h').checked;
         const fStart = fRow.querySelector('.inp-s').value;
@@ -361,9 +556,9 @@
         }
     }
 
-    // --- 4. 資料存取 ---
+    // --- 4. 存取 ---
     function saveData() {
-        const key = `mylog_${document.getElementById('weekStart').value}`;
+        const key = `elia_log_${document.getElementById('weekStart').value}`;
         const data = Array.from(document.querySelectorAll('#tbody tr')).map(tr => ({
             s: tr.querySelector('.inp-s').value,
             e: tr.querySelector('.inp-e').value,
@@ -374,7 +569,7 @@
     }
 
     function loadAndCalc(save = true) {
-        const key = `mylog_${document.getElementById('weekStart').value}`;
+        const key = `elia_log_${document.getElementById('weekStart').value}`;
         const json = localStorage.getItem(key);
         const rows = document.querySelectorAll('#tbody tr');
 
@@ -389,7 +584,6 @@
                 }
             });
         } else {
-            // 無資料 -> 自動套用國定假日預設
             rows.forEach(tr => {
                 const holName = getHoliday(tr.dataset.date);
                 tr.querySelector('.inp-h').checked = !!holName;
@@ -397,20 +591,20 @@
                 tr.querySelector('.inp-e').value = (tr.rowIndex === 5) ? "" : "18:00";
                 tr.querySelector('.inp-l').value = "";
             });
-            if(save) saveData(); // 第一次載入就存檔，鎖定預設值
+            if(save) saveData();
         }
         calculate();
     }
 
     function resetData() {
-        if(confirm("確定重置本週資料？將恢復為預設假日狀態。")) {
-            const key = `mylog_${document.getElementById('weekStart').value}`;
+        if(confirm("要重置這週的資料嗎？")) {
+            const key = `elia_log_${document.getElementById('weekStart').value}`;
             localStorage.removeItem(key);
             loadAndCalc();
         }
     }
 
-    // --- 5. 月曆渲染 ---
+    // --- 5. 月曆 ---
     function renderCalendar() {
         const grid = document.getElementById('calGrid');
         grid.innerHTML = '<div class="cal-head">日</div><div class="cal-head">一</div><div class="cal-head">二</div><div class="cal-head">三</div><div class="cal-head">四</div><div class="cal-head">五</div><div class="cal-head">六</div>';
@@ -423,7 +617,6 @@
         const startDay = firstD.getDay();
         const daysInM = new Date(y, m+1, 0).getDate();
 
-        // 檢查目前編輯週的範圍
         const curWeek = document.getElementById('weekStart').value;
         const wStart = curWeek ? new Date(curWeek) : null;
         const wEnd = wStart ? new Date(wStart) : null;
