@@ -245,3 +245,296 @@
     const HOLIDAYS_DB = {
         '2025': {
             '01-01': '元旦',
+            '01-27': '除夕補假', '01-28': '春節', '01-29': '春節', '01-30': '春節', '01-31': '春節',
+            '02-28': '228',
+            '04-03': '兒童節', '04-04': '清明節',
+            '05-01': '勞動節',
+            '05-30': '端午連假',
+            '10-06': '中秋連假',
+            '10-10': '國慶日'
+        },
+        '2026': {
+            '01-01': '元旦',
+            '02-16': '除夕補假', '02-17': '春節', '02-18': '春節', '02-19': '春節', '02-20': '春節',
+            '02-27': '228補假',
+            '04-03': '兒童節', '04-06': '清明補假',
+            '05-01': '勞動節',
+            '06-19': '端午連假',
+            '09-25': '中秋連假',
+            '10-09': '國慶補假',
+            '12-25': '行憲紀念日'
+        }
+    };
+
+    const CONFIG = { LUNCH_START: 12 * 60, LUNCH_END: 13 * 60, TARGET: 40 };
+    let viewDate = new Date();
+
+    // --- 2. 初始化 ---
+    window.onload = function() {
+        const last = localStorage.getItem('elia_log_last');
+        if (last) {
+            document.getElementById('weekStart').value = last;
+            viewDate = new Date(last);
+        } else {
+            jumpToToday();
+        }
+        refreshAll(false);
+    };
+
+    function jumpToToday() {
+        const d = new Date();
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day == 0 ? -6 : 1);
+        const monday = new Date(d.setDate(diff));
+        document.getElementById('weekStart').value = toISODate(monday);
+        viewDate = new Date();
+        refreshAll();
+    }
+
+    function onWeekChange() {
+        const val = document.getElementById('weekStart').value;
+        if(val) {
+            localStorage.setItem('elia_log_last', val);
+            viewDate = new Date(val);
+            refreshAll();
+        }
+    }
+
+    function navMonth(delta) {
+        viewDate.setMonth(viewDate.getMonth() + delta);
+        renderCalendar();
+    }
+
+    function refreshAll(save = true) {
+        renderCalendar();
+        renderTable();
+        loadAndCalc(save);
+    }
+
+    // --- 3. 渲染與計算 ---
+    function renderTable() {
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML = '';
+        const startVal = document.getElementById('weekStart').value;
+        if (!startVal) return;
+
+        const startDt = new Date(startVal);
+        const wDays = ['週一','週二','週三','週四','週五'];
+
+        for(let i=0; i<5; i++) {
+            const d = new Date(startDt);
+            d.setDate(startDt.getDate() + i);
+            const iso = toISODate(d);
+            const holName = getHoliday(iso);
+
+            const tr = document.createElement('tr');
+            tr.dataset.date = iso;
+            
+            // --- 更新：日期與星期並排 ---
+            let dateHTML = `
+                <div class="date-wrapper">
+                    <span class="date-main">${iso.slice(5)}</span>
+                    <span class="date-day">${wDays[i]}</span>
+                    ${holName ? `<span class="tag-holiday">${holName}</span>` : ''}
+                </div>
+            `;
+
+            tr.innerHTML = `
+                <td style="text-align:left;">${dateHTML}</td>
+                <td><input type="time" class="inp-s" value="09:00" onchange="update()"></td>
+                <td><input type="time" class="inp-e" value="18:00" onchange="update()"></td>
+                <td style="color:#aaa; font-size:0.8em;">-1H</td>
+                <td><input type="number" class="inp-l leave-inp" min="0" max="8" step="0.5" onchange="update()"></td>
+                <td><input type="checkbox" class="inp-h" onchange="update()"></td>
+                <td class="res-h" style="font-weight:bold; color:var(--text);">0.00</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    }
+
+    function update() {
+        saveData();
+        calculate();
+    }
+
+    function calculate() {
+        let total = 0, preFri = 0;
+        const rows = document.querySelectorAll('#tbody tr');
+        
+        rows.forEach((tr, idx) => {
+            const s = timeToMin(tr.querySelector('.inp-s').value);
+            const e = timeToMin(tr.querySelector('.inp-e').value);
+            const l = parseFloat(tr.querySelector('.inp-l').value) || 0;
+            const isHol = tr.querySelector('.inp-h').checked;
+            const res = tr.querySelector('.res-h');
+
+            tr.classList.remove('mode-holiday', 'mode-leave');
+            const inps = tr.querySelectorAll('input:not([type="checkbox"])');
+
+            let dayMins = 0;
+
+            if (isHol) {
+                tr.classList.add('mode-holiday');
+                dayMins = 480; 
+                res.textContent = "8H";
+                inps.forEach(k => k.disabled = true);
+                tr.querySelector('.inp-s').style.opacity = 0.3;
+            } else {
+                inps.forEach(k => k.disabled = false);
+                tr.querySelector('.inp-s').style.opacity = 1;
+                
+                if (l > 0) tr.classList.add('mode-leave');
+
+                let work = 0;
+                if(s !== null && e !== null) work = calcNet(s, e);
+                dayMins = work + (l * 60);
+
+                res.textContent = dayMins > 0 ? (dayMins/60).toFixed(2) : "--";
+            }
+
+            total += dayMins;
+            if (idx < 4) preFri += dayMins;
+        });
+
+        // Summary
+        document.getElementById('sumTotal').textContent = (total/60).toFixed(2);
+        const left = Math.max(0, CONFIG.TARGET * 60 - total);
+        document.getElementById('sumLeft').textContent = (left/60).toFixed(2);
+
+        // Predict
+        const fRow = rows[4];
+        const fHol = fRow.querySelector('.inp-h').checked;
+        const fStart = fRow.querySelector('.inp-s').value;
+        const fLeave = parseFloat(fRow.querySelector('.inp-l').value) || 0;
+        const pBox = document.getElementById('predict');
+
+        const needed = (CONFIG.TARGET * 60) - preFri - (fLeave * 60);
+
+        if (fHol) pBox.textContent = "週五休";
+        else if (needed <= 0) pBox.textContent = "已達標";
+        else if (!fStart) pBox.textContent = "待輸入";
+        else {
+            let cur = timeToMin(fStart);
+            let w = 0;
+            while (w < needed) {
+                cur++;
+                if (cur <= CONFIG.LUNCH_START || cur > CONFIG.LUNCH_END) w++;
+            }
+            pBox.textContent = minToTime(cur);
+        }
+    }
+
+    // --- 4. 存取 ---
+    function saveData() {
+        const key = `elia_log_${document.getElementById('weekStart').value}`;
+        const data = Array.from(document.querySelectorAll('#tbody tr')).map(tr => ({
+            s: tr.querySelector('.inp-s').value,
+            e: tr.querySelector('.inp-e').value,
+            l: tr.querySelector('.inp-l').value,
+            h: tr.querySelector('.inp-h').checked
+        }));
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    function loadAndCalc(save = true) {
+        const key = `elia_log_${document.getElementById('weekStart').value}`;
+        const json = localStorage.getItem(key);
+        const rows = document.querySelectorAll('#tbody tr');
+
+        if (json) {
+            const data = JSON.parse(json);
+            rows.forEach((tr, i) => {
+                if(data[i]) {
+                    tr.querySelector('.inp-s').value = data[i].s;
+                    tr.querySelector('.inp-e').value = data[i].e;
+                    tr.querySelector('.inp-l').value = data[i].l;
+                    tr.querySelector('.inp-h').checked = data[i].h;
+                }
+            });
+        } else {
+            rows.forEach(tr => {
+                const holName = getHoliday(tr.dataset.date);
+                tr.querySelector('.inp-h').checked = !!holName;
+                tr.querySelector('.inp-s').value = "09:00";
+                tr.querySelector('.inp-e').value = (tr.rowIndex === 5) ? "" : "18:00";
+                tr.querySelector('.inp-l').value = "";
+            });
+            if(save) saveData();
+        }
+        calculate();
+    }
+
+    function resetData() {
+        if(confirm("要重置這週的資料嗎？")) {
+            const key = `elia_log_${document.getElementById('weekStart').value}`;
+            localStorage.removeItem(key);
+            loadAndCalc();
+        }
+    }
+
+    // --- 5. 月曆 ---
+    function renderCalendar() {
+        const grid = document.getElementById('calGrid');
+        grid.innerHTML = '<div class="cal-head">日</div><div class="cal-head">一</div><div class="cal-head">二</div><div class="cal-head">三</div><div class="cal-head">四</div><div class="cal-head">五</div><div class="cal-head">六</div>';
+        
+        const y = viewDate.getFullYear();
+        const m = viewDate.getMonth();
+        document.getElementById('calTitle').textContent = `${y} 年 ${m+1} 月`;
+
+        const firstD = new Date(y, m, 1);
+        const startDay = firstD.getDay();
+        const daysInM = new Date(y, m+1, 0).getDate();
+
+        const curWeek = document.getElementById('weekStart').value;
+        const wStart = curWeek ? new Date(curWeek) : null;
+        const wEnd = wStart ? new Date(wStart) : null;
+        if(wEnd) wEnd.setDate(wStart.getDate()+4);
+
+        const today = toISODate(new Date());
+
+        for(let i=0; i<startDay; i++) grid.innerHTML += `<div></div>`;
+
+        for(let d=1; d<=daysInM; d++) {
+            const dateObj = new Date(y, m, d);
+            const iso = toISODate(dateObj);
+            const hol = getHoliday(iso);
+            
+            const div = document.createElement('div');
+            div.className = 'cal-cell';
+            div.textContent = d;
+            
+            if(iso === today) div.classList.add('is-today');
+            if(hol) {
+                div.classList.add('is-holiday');
+                div.title = hol;
+            }
+            if(wStart && iso >= curWeek && iso <= toISODate(wEnd)) {
+                div.classList.add('is-active-week');
+            }
+
+            grid.appendChild(div);
+        }
+    }
+
+    // --- Utils ---
+    function getHoliday(iso) {
+        const y = iso.substring(0,4);
+        const md = iso.substring(5);
+        return (HOLIDAYS_DB[y] && HOLIDAYS_DB[y][md]) ? HOLIDAYS_DB[y][md] : null;
+    }
+    function toISODate(d) {
+        const z = d.getTimezoneOffset() * 60000;
+        return new Date(d.getTime() - z).toISOString().split('T')[0];
+    }
+    function timeToMin(s) { return s ? s.split(':').reduce((h,m)=>h*60 + +m) : null; }
+    function minToTime(m) { return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`; }
+    function calcNet(s, e) {
+        if(s >= e) return 0;
+        let d = e - s;
+        let oS = Math.max(s, CONFIG.LUNCH_START), oE = Math.min(e, CONFIG.LUNCH_END);
+        if(oE > oS) d -= (oE - oS);
+        return d;
+    }
+</script>
+</body>
+</html>
