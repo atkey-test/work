@@ -6,18 +6,19 @@
     <title>工時計算表</title>
     <style>
         :root {
-            /* 預設值 (會被 JS 覆蓋) */
-            --primary: #FF9AA2;
+            /* --- 可愛馬卡龍配色 --- */
+            --primary: #FF9AA2;       /* 柔和粉紅 (標題/按鈕) */
             --primary-hover: #ff808b;
-            --accent: #B5EAD7;
+            --accent: #B5EAD7;        /* 薄荷綠 (選取狀態/今天) */
             --accent-text: #4a8a76;
-            --holiday: #FF6961;
-            --holiday-bg: #FFF0F0;
-            --bg: #FFF9FA;
+            --holiday: #FF6961;       /* 珊瑚紅 (假日文字) */
+            --holiday-bg: #FFF0F0;    /* 假日背景 */
+            --bg: #FFF9FA;            /* 極淡粉紅背景 */
             --card-bg: #FFFFFF;
-            --text: #6B5B5B;
+            --text: #6B5B5B;          /* 暖灰文字 (不刺眼) */
             --border: #FFE5E5;
-            --radius: 20px;
+            
+            --radius: 20px;           /* 大圓角 */
         }
 
         body {
@@ -26,9 +27,8 @@
             margin: 0;
             padding: 20px;
             color: var(--text);
-            background-image: radial-gradient(var(--border) 2px, transparent 2px);
+            background-image: radial-gradient(#ffeef0 2px, transparent 2px);
             background-size: 30px 30px;
-            transition: background-color 0.5s ease;
         }
 
         .main-layout {
@@ -47,46 +47,8 @@
             background: var(--card-bg);
             padding: 25px;
             border-radius: var(--radius);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            border: 2px solid var(--border);
-            transition: border-color 0.5s ease;
-        }
-
-        /* --- 設定列 (新增) --- */
-        .settings-bar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed var(--border);
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .settings-input-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .settings-label {
-            font-size: 0.9em;
-            font-weight: bold;
-            color: #888;
-        }
-
-        .custom-input, .theme-select {
-            padding: 8px 12px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.95em;
-            outline: none;
-            color: var(--text);
-            background: #fff;
-            transition: 0.2s;
-        }
-        .custom-input:focus, .theme-select:focus {
-            border-color: var(--primary);
+            box-shadow: 0 10px 25px rgba(255, 154, 162, 0.15);
+            border: 2px solid #FFF0F5;
         }
 
         /* --- 左側月曆 --- */
@@ -94,7 +56,6 @@
         .calendar-header button { 
             background: var(--bg); border: 2px solid var(--primary); color: var(--primary);
             width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold;
-            transition: 0.2s;
         }
         .calendar-header button:hover { background: var(--primary); color: white; }
         .calendar-title { font-weight: bold; font-size: 1.2em; color: var(--primary); letter-spacing: 1px; }
@@ -102,20 +63,20 @@
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; }
         .cal-head { font-size: 0.85em; color: #aaa; padding-bottom: 5px; font-weight: bold;}
         .cal-cell { 
-            padding: 10px 2px; font-size: 0.9em; border-radius: 12px; position: relative; cursor: pointer; transition: 0.2s;
+            padding: 10px 2px; font-size: 0.9em; border-radius: 12px; position: relative; cursor: pointer;
         }
-        .cal-cell:hover { background-color: var(--bg); transform: scale(1.1); }
+        .cal-cell:hover { background-color: #FFF0F5; } /* 移除 transform scale */
         
         .is-holiday { color: var(--holiday); font-weight: bold; }
         .is-holiday::after { content: '★'; font-size: 0.6em; display: block; margin-top: 2px; color: var(--holiday); }
         
-        .is-active-week { background-color: var(--accent); color: var(--accent-text); font-weight: bold; border-radius: 12px; }
-        .is-today { border: 2px dashed var(--primary); background: transparent; }
+        .is-active-week { background-color: #E2F0CB; color: #556B2F; font-weight: bold; border-radius: 12px; }
+        .is-today { border: 2px dashed var(--primary); background: #FFF; }
 
         /* --- 右側工時表 --- */
         h2.app-title {
             margin: 0 0 20px 0; color: var(--primary); text-align: center; font-size: 1.8em;
-            text-shadow: 2px 2px 0px var(--border);
+            text-shadow: 2px 2px 0px #FFF0F5;
         }
 
         .panel-header {
@@ -133,10 +94,10 @@
         .btn-google {
             background-color: #fff; color: #555; border: 2px solid #eee;
             padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 0.9em;
-            display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;
+            display: inline-flex; align-items: center; gap: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .btn-google:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-2px); }
+        .btn-google:hover { border-color: var(--primary); color: var(--primary); } /* 移除 transform translateY */
         .btn-google img { width: 18px; height: 18px; }
 
         /* 表格樣式優化 */
@@ -147,17 +108,18 @@
             border-bottom: 2px solid var(--border);
         }
 
+        /* 每一行變成一個小卡片 */
         tbody tr { 
             background: white; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            transition: 0.2s;
         }
-        tbody tr:hover { transform: scale(1.01); }
+        /* 移除 tbody tr:hover 的 transform scale */
 
         td { padding: 12px 5px; text-align: center; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
         td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
 
+        /* 日期並排樣式 */
         .date-wrapper {
             display: flex; align-items: center; justify-content: flex-start; gap: 8px; padding-left: 10px;
         }
@@ -165,8 +127,9 @@
         .date-day { font-size: 0.9em; color: #aaa; background: #f5f5f5; padding: 2px 8px; border-radius: 10px; }
         .tag-holiday { font-size: 0.8em; padding: 3px 8px; background: var(--holiday); color: white; border-radius: 15px; white-space: nowrap; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
 
-        tr.mode-holiday td { background-color: var(--holiday-bg); border-color: var(--border); }
-        tr.mode-leave td { background-color: var(--bg); border-color: var(--border); }
+        /* 狀態顏色 */
+        tr.mode-holiday td { background-color: var(--holiday-bg); border-color: #ffd6d6; }
+        tr.mode-leave td { background-color: #F0FFF4; border-color: #d6ffe0; }
         
         input { font-family: inherit; }
         input[type="time"] { 
@@ -183,24 +146,24 @@
         input[type="checkbox"]:checked { background-color: var(--holiday); border-color: var(--holiday); }
         input[type="checkbox"]:checked::after { content: '✔'; color: white; position: absolute; left: 3px; top: -1px; font-size: 14px;}
 
-        /* 底部統計 */
+        /* 底部統計 (馬卡龍色塊) */
         .summary {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;
         }
         .sum-card {
             padding: 15px; border-radius: 15px; color: white; text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            /* 預設背景，JS會根據主題微調 */
-            background: var(--primary); 
-            opacity: 0.9;
         }
-        
+        .bg-pink { background: linear-gradient(135deg, #FF9AA2, #FFB7B2); }
+        .bg-mint { background: linear-gradient(135deg, #B5EAD7, #95d6c0); color: #3e705d; }
+        .bg-yellow { background: linear-gradient(135deg, #FFDAC1, #FFDFD3); color: #8a6b4e; }
+
         .sum-val { font-size: 1.6em; font-weight: bold; margin-top: 5px; }
         .sum-lbl { font-size: 0.9em; opacity: 0.9; }
         
         .reset-btn {
             background: none; border: none; color: #aaa; cursor: pointer; 
-            font-size: 0.85em; margin-top: 15px; transition: 0.2s;
+            font-size: 0.85em; margin-top: 15px;
         }
         .reset-btn:hover { color: var(--holiday); text-decoration: underline; }
     </style>
@@ -219,36 +182,19 @@
         <div style="margin-top:20px; padding-top:15px; border-top:2px dashed var(--border); font-size:0.85em; line-height:1.6; color:#888;">
             <div style="margin-bottom:5px;">📅 <b>小提醒：</b></div>
             • <span style="color:var(--holiday);">★ 紅字</span> 是國定假日喔<br>
-            • 深色背景是正在編輯的週<br>
+            • 綠色背景是正在編輯的週<br>
         </div>
     </div>
 
     <div class="card">
-        <div class="settings-bar">
-            <div class="settings-input-group">
-                <span class="settings-label">使用者:</span>
-                <input type="text" id="userNameInput" class="custom-input" placeholder="輸入您的名字" oninput="updateTitle()">
-            </div>
-            <div class="settings-input-group">
-                <span class="settings-label">樣式:</span>
-                <select id="themeSelect" class="theme-select" onchange="changeTheme(this.value)">
-                    <option value="pink">🌸 甜心馬卡龍</option>
-                    <option value="blue">🌊 清爽海洋</option>
-                    <option value="green">🍃 護眼森林</option>
-                    <option value="purple">🔮 優雅薰衣草</option>
-                    <option value="mono">🎱 極簡黑白</option>
-                </select>
-            </div>
-        </div>
-
-        <h2 class="app-title" id="mainTitle">工時計算表</h2>
+        <h2 class="app-title">工時計算表</h2>
         
         <div class="panel-header">
             <div class="date-picker-group">
                 <label>選擇本週 (週一)</label>
                 <div style="display:flex; gap:10px;">
                     <input type="date" id="weekStart" onchange="onWeekChange()">
-                    <button onclick="jumpToToday()" style="background:var(--accent); border:none; border-radius:10px; color:var(--accent-text); cursor:pointer; padding:0 12px; font-weight:bold;">今天</button>
+                    <button onclick="jumpToToday()" style="background:var(--accent); border:none; border-radius:10px; color:#3e705d; cursor:pointer; padding:0 12px; font-weight:bold;">今天</button>
                 </div>
             </div>
             
@@ -274,15 +220,15 @@
         </table>
 
         <div class="summary">
-            <div class="sum-card" style="background: linear-gradient(135deg, var(--primary), #ddd);">
+            <div class="sum-card bg-pink">
                 <div class="sum-lbl">本週工時</div>
                 <div class="sum-val" id="sumTotal">0.00</div>
             </div>
-            <div class="sum-card" style="background: linear-gradient(135deg, var(--accent), #eee); color:var(--accent-text);">
+            <div class="sum-card bg-mint">
                 <div class="sum-lbl">距離 40H</div>
                 <div class="sum-val" id="sumLeft">0.00</div>
             </div>
-            <div class="sum-card" style="background: linear-gradient(135deg, #FFDAC1, #FFDFD3); color:#8a6b4e;">
+            <div class="sum-card bg-yellow">
                 <div class="sum-lbl">週五下班</div>
                 <div class="sum-val" id="predict">--:--</div>
             </div>
@@ -295,378 +241,7 @@
 </div>
 
 <script>
-    // --- 0. 樣式定義 ---
-    const THEMES = {
-        pink: { // 原始粉色
-            '--primary': '#FF9AA2', '--primary-hover': '#ff808b',
-            '--accent': '#B5EAD7', '--accent-text': '#4a8a76',
-            '--holiday': '#FF6961', '--holiday-bg': '#FFF0F0',
-            '--bg': '#FFF9FA', '--text': '#6B5B5B', '--border': '#FFE5E5'
-        },
-        blue: { // 藍色系
-            '--primary': '#4FC3F7', '--primary-hover': '#29B6F6',
-            '--accent': '#FFF59D', '--accent-text': '#F57F17',
-            '--holiday': '#E57373', '--holiday-bg': '#FFEBEE',
-            '--bg': '#E1F5FE', '--text': '#455A64', '--border': '#B3E5FC'
-        },
-        green: { // 綠色系
-            '--primary': '#66BB6A', '--primary-hover': '#43A047',
-            '--accent': '#FFCC80', '--accent-text': '#E65100',
-            '--holiday': '#FF7043', '--holiday-bg': '#FBE9E7',
-            '--bg': '#F1F8E9', '--text': '#33691E', '--border': '#C5E1A5'
-        },
-        purple: { // 紫色系
-            '--primary': '#CE93D8', '--primary-hover': '#BA68C8',
-            '--accent': '#B2DFDB', '--accent-text': '#00695C',
-            '--holiday': '#F48FB1', '--holiday-bg': '#FCE4EC',
-            '--bg': '#F3E5F5', '--text': '#4A148C', '--border': '#E1BEE7'
-        },
-        mono: { // 黑白極簡
-            '--primary': '#757575', '--primary-hover': '#424242',
-            '--accent': '#BDBDBD', '--accent-text': '#000000',
-            '--holiday': '#000000', '--holiday-bg': '#EEEEEE',
-            '--bg': '#FAFAFA', '--text': '#212121', '--border': '#E0E0E0'
-        }
-    };
-
     // --- 1. 內建國定假日 (2025-2026) ---
     const HOLIDAYS_DB = {
         '2025': {
             '01-01': '元旦',
-            '01-27': '除夕補假', '01-28': '春節', '01-29': '春節', '01-30': '春節', '01-31': '春節',
-            '02-28': '228',
-            '04-03': '兒童節', '04-04': '清明節',
-            '05-01': '勞動節',
-            '05-30': '端午連假',
-            '10-06': '中秋連假',
-            '10-10': '國慶日'
-        },
-        '2026': {
-            '01-01': '元旦',
-            '02-16': '除夕補假', '02-17': '春節', '02-18': '春節', '02-19': '春節', '02-20': '春節',
-            '02-27': '228補假',
-            '04-03': '兒童節', '04-06': '清明補假',
-            '05-01': '勞動節',
-            '06-19': '端午連假',
-            '09-25': '中秋連假',
-            '10-09': '國慶補假',
-            '12-25': '行憲紀念日'
-        }
-    };
-
-    const CONFIG = { LUNCH_START: 12 * 60, LUNCH_END: 13 * 60, TARGET: 40 };
-    let viewDate = new Date();
-
-    // --- 2. 初始化 ---
-    window.onload = function() {
-        // 載入使用者設定
-        loadSettings();
-
-        const last = localStorage.getItem('elia_log_last');
-        if (last) {
-            document.getElementById('weekStart').value = last;
-            viewDate = new Date(last);
-        } else {
-            jumpToToday();
-        }
-        refreshAll(false);
-    };
-
-    // --- 新增: 設定載入與處理 ---
-    function loadSettings() {
-        const savedName = localStorage.getItem('ws_username');
-        const savedTheme = localStorage.getItem('ws_theme') || 'pink';
-        
-        if(savedName) {
-            document.getElementById('userNameInput').value = savedName;
-            updateTitle();
-        }
-        
-        document.getElementById('themeSelect').value = savedTheme;
-        changeTheme(savedTheme);
-    }
-
-    function updateTitle() {
-        const name = document.getElementById('userNameInput').value;
-        const titleEl = document.getElementById('mainTitle');
-        const browserTitle = document.querySelector('title');
-        
-        if (name && name.trim() !== '') {
-            titleEl.textContent = `${name} 的工時計算表`;
-            browserTitle.textContent = `${name} 的工時表`;
-            localStorage.setItem('ws_username', name);
-        } else {
-            titleEl.textContent = "工時計算表";
-            browserTitle.textContent = "工時計算表";
-            localStorage.removeItem('ws_username');
-        }
-    }
-
-    function changeTheme(themeKey) {
-        const theme = THEMES[themeKey];
-        if(!theme) return;
-        
-        const root = document.documentElement;
-        for (const [key, value] of Object.entries(theme)) {
-            root.style.setProperty(key, value);
-        }
-        localStorage.setItem('ws_theme', themeKey);
-    }
-    // --- 結束新增 ---
-
-    function jumpToToday() {
-        const d = new Date();
-        const day = d.getDay();
-        const diff = d.getDate() - day + (day == 0 ? -6 : 1);
-        const monday = new Date(d.setDate(diff));
-        document.getElementById('weekStart').value = toISODate(monday);
-        viewDate = new Date();
-        refreshAll();
-    }
-
-    function onWeekChange() {
-        const val = document.getElementById('weekStart').value;
-        if(val) {
-            localStorage.setItem('elia_log_last', val);
-            viewDate = new Date(val);
-            refreshAll();
-        }
-    }
-
-    function navMonth(delta) {
-        viewDate.setMonth(viewDate.getMonth() + delta);
-        renderCalendar();
-    }
-
-    function refreshAll(save = true) {
-        renderCalendar();
-        renderTable();
-        loadAndCalc(save);
-    }
-
-    // --- 3. 渲染與計算 ---
-    function renderTable() {
-        const tbody = document.getElementById('tbody');
-        tbody.innerHTML = '';
-        const startVal = document.getElementById('weekStart').value;
-        if (!startVal) return;
-
-        const startDt = new Date(startVal);
-        const wDays = ['週一','週二','週三','週四','週五'];
-
-        for(let i=0; i<5; i++) {
-            const d = new Date(startDt);
-            d.setDate(startDt.getDate() + i);
-            const iso = toISODate(d);
-            const holName = getHoliday(iso);
-
-            const tr = document.createElement('tr');
-            tr.dataset.date = iso;
-            
-            let dateHTML = `
-                <div class="date-wrapper">
-                    <span class="date-main">${iso.slice(5)}</span>
-                    <span class="date-day">${wDays[i]}</span>
-                    ${holName ? `<span class="tag-holiday">${holName}</span>` : ''}
-                </div>
-            `;
-
-            tr.innerHTML = `
-                <td style="text-align:left;">${dateHTML}</td>
-                <td><input type="time" class="inp-s" value="09:00" onchange="update()"></td>
-                <td><input type="time" class="inp-e" value="18:00" onchange="update()"></td>
-                <td style="color:#aaa; font-size:0.8em;">-1H</td>
-                <td><input type="number" class="inp-l leave-inp" min="0" max="8" step="0.5" onchange="update()"></td>
-                <td><input type="checkbox" class="inp-h" onchange="update()"></td>
-                <td class="res-h" style="font-weight:bold; color:var(--text);">0.00</td>
-            `;
-            tbody.appendChild(tr);
-        }
-    }
-
-    function update() {
-        saveData();
-        calculate();
-    }
-
-    function calculate() {
-        let total = 0, preFri = 0;
-        const rows = document.querySelectorAll('#tbody tr');
-        
-        rows.forEach((tr, idx) => {
-            const s = timeToMin(tr.querySelector('.inp-s').value);
-            const e = timeToMin(tr.querySelector('.inp-e').value);
-            const l = parseFloat(tr.querySelector('.inp-l').value) || 0;
-            const isHol = tr.querySelector('.inp-h').checked;
-            const res = tr.querySelector('.res-h');
-
-            tr.classList.remove('mode-holiday', 'mode-leave');
-            const inps = tr.querySelectorAll('input:not([type="checkbox"])');
-
-            let dayMins = 0;
-
-            if (isHol) {
-                tr.classList.add('mode-holiday');
-                dayMins = 480; 
-                res.textContent = "8H";
-                inps.forEach(k => k.disabled = true);
-                tr.querySelector('.inp-s').style.opacity = 0.3;
-            } else {
-                inps.forEach(k => k.disabled = false);
-                tr.querySelector('.inp-s').style.opacity = 1;
-                
-                if (l > 0) tr.classList.add('mode-leave');
-
-                let work = 0;
-                if(s !== null && e !== null) work = calcNet(s, e);
-                dayMins = work + (l * 60);
-
-                res.textContent = dayMins > 0 ? (dayMins/60).toFixed(2) : "--";
-            }
-
-            total += dayMins;
-            if (idx < 4) preFri += dayMins;
-        });
-
-        // Summary
-        document.getElementById('sumTotal').textContent = (total/60).toFixed(2);
-        const left = Math.max(0, CONFIG.TARGET * 60 - total);
-        document.getElementById('sumLeft').textContent = (left/60).toFixed(2);
-
-        // Predict
-        const fRow = rows[4];
-        const fHol = fRow.querySelector('.inp-h').checked;
-        const fStart = fRow.querySelector('.inp-s').value;
-        const fLeave = parseFloat(fRow.querySelector('.inp-l').value) || 0;
-        const pBox = document.getElementById('predict');
-
-        const needed = (CONFIG.TARGET * 60) - preFri - (fLeave * 60);
-
-        if (fHol) pBox.textContent = "週五休";
-        else if (needed <= 0) pBox.textContent = "已達標";
-        else if (!fStart) pBox.textContent = "待輸入";
-        else {
-            let cur = timeToMin(fStart);
-            let w = 0;
-            while (w < needed) {
-                cur++;
-                if (cur <= CONFIG.LUNCH_START || cur > CONFIG.LUNCH_END) w++;
-            }
-            pBox.textContent = minToTime(cur);
-        }
-    }
-
-    // --- 4. 存取 ---
-    function saveData() {
-        const key = `elia_log_${document.getElementById('weekStart').value}`;
-        const data = Array.from(document.querySelectorAll('#tbody tr')).map(tr => ({
-            s: tr.querySelector('.inp-s').value,
-            e: tr.querySelector('.inp-e').value,
-            l: tr.querySelector('.inp-l').value,
-            h: tr.querySelector('.inp-h').checked
-        }));
-        localStorage.setItem(key, JSON.stringify(data));
-    }
-
-    function loadAndCalc(save = true) {
-        const key = `elia_log_${document.getElementById('weekStart').value}`;
-        const json = localStorage.getItem(key);
-        const rows = document.querySelectorAll('#tbody tr');
-
-        if (json) {
-            const data = JSON.parse(json);
-            rows.forEach((tr, i) => {
-                if(data[i]) {
-                    tr.querySelector('.inp-s').value = data[i].s;
-                    tr.querySelector('.inp-e').value = data[i].e;
-                    tr.querySelector('.inp-l').value = data[i].l;
-                    tr.querySelector('.inp-h').checked = data[i].h;
-                }
-            });
-        } else {
-            rows.forEach(tr => {
-                const holName = getHoliday(tr.dataset.date);
-                tr.querySelector('.inp-h').checked = !!holName;
-                tr.querySelector('.inp-s').value = "09:00";
-                tr.querySelector('.inp-e').value = (tr.rowIndex === 5) ? "" : "18:00";
-                tr.querySelector('.inp-l').value = "";
-            });
-            if(save) saveData();
-        }
-        calculate();
-    }
-
-    function resetData() {
-        if(confirm("要重置這週的資料嗎？")) {
-            const key = `elia_log_${document.getElementById('weekStart').value}`;
-            localStorage.removeItem(key);
-            loadAndCalc();
-        }
-    }
-
-    // --- 5. 月曆 ---
-    function renderCalendar() {
-        const grid = document.getElementById('calGrid');
-        grid.innerHTML = '<div class="cal-head">日</div><div class="cal-head">一</div><div class="cal-head">二</div><div class="cal-head">三</div><div class="cal-head">四</div><div class="cal-head">五</div><div class="cal-head">六</div>';
-        
-        const y = viewDate.getFullYear();
-        const m = viewDate.getMonth();
-        document.getElementById('calTitle').textContent = `${y} 年 ${m+1} 月`;
-
-        const firstD = new Date(y, m, 1);
-        const startDay = firstD.getDay();
-        const daysInM = new Date(y, m+1, 0).getDate();
-
-        const curWeek = document.getElementById('weekStart').value;
-        const wStart = curWeek ? new Date(curWeek) : null;
-        const wEnd = wStart ? new Date(wStart) : null;
-        if(wEnd) wEnd.setDate(wStart.getDate()+4);
-
-        const today = toISODate(new Date());
-
-        for(let i=0; i<startDay; i++) grid.innerHTML += `<div></div>`;
-
-        for(let d=1; d<=daysInM; d++) {
-            const dateObj = new Date(y, m, d);
-            const iso = toISODate(dateObj);
-            const hol = getHoliday(iso);
-            
-            const div = document.createElement('div');
-            div.className = 'cal-cell';
-            div.textContent = d;
-            
-            if(iso === today) div.classList.add('is-today');
-            if(hol) {
-                div.classList.add('is-holiday');
-                div.title = hol;
-            }
-            if(wStart && iso >= curWeek && iso <= toISODate(wEnd)) {
-                div.classList.add('is-active-week');
-            }
-
-            grid.appendChild(div);
-        }
-    }
-
-    // --- Utils ---
-    function getHoliday(iso) {
-        const y = iso.substring(0,4);
-        const md = iso.substring(5);
-        return (HOLIDAYS_DB[y] && HOLIDAYS_DB[y][md]) ? HOLIDAYS_DB[y][md] : null;
-    }
-    function toISODate(d) {
-        const z = d.getTimezoneOffset() * 60000;
-        return new Date(d.getTime() - z).toISOString().split('T')[0];
-    }
-    function timeToMin(s) { return s ? s.split(':').reduce((h,m)=>h*60 + +m) : null; }
-    function minToTime(m) { return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`; }
-    function calcNet(s, e) {
-        if(s >= e) return 0;
-        let d = e - s;
-        let oS = Math.max(s, CONFIG.LUNCH_START), oE = Math.min(e, CONFIG.LUNCH_END);
-        if(oE > oS) d -= (oE - oS);
-        return d;
-    }
-</script>
-</body>
-</html>
