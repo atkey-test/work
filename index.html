@@ -6,91 +6,226 @@
     <title>工時計算表</title>
     <style>
         /* =========================================
-           1. CSS 變數定義 (三種風格)
+           1. CSS 變數定義 (10 組風格)
+           邏輯：
+           Color 1 -> --bg (背景)
+           Color 2 -> --border (邊框/假日底), --sum-bg-3
+           Color 3 -> --accent (強調/選取), --sum-bg-2
+           Color 4 -> --primary (主色/標題), --sum-bg-1
         ========================================= */
 
-        /* --- 風格 1: 馬卡龍 (原始保留) --- */
+        /* --- 第 1 組: 米灰藍調 (預設) --- */
+        /* #F4F2EE, #C7D4DF, #C3D5BC, #6B9FBE */
         :root {
-            --primary: #FF9AA2;       /* 柔和粉紅 */
-            --primary-hover: #ff808b;
-            --accent: #B5EAD7;        /* 薄荷綠 */
-            --accent-text: #4a8a76;
-            --holiday: #FF6961;       /* 珊瑚紅 */
-            --holiday-bg: #FFF0F0;    /* 假日背景 (表格行) */
-            --holiday-cell-bg: #ffedea; /* 月曆假日背景 */
-            --weekend: #FFB74D;       /* 週末橘色 */
-            
-            --bg: #FFF9FA;            /* 背景色 */
-            --card-bg: #FFFFFF;       /* 卡片背景 */
-            --text: #6B5B5B;          /* 文字色 */
-            --border: #FFE5E5;        /* 邊框色 */
-            
-            --radius: 20px;
-            --bg-image: radial-gradient(#ffeef0 2px, transparent 2px); /* 點點背景 */
+            --bg: #F4F2EE;
+            --card-bg: #FFFFFF;
+            --text: #555555; /* 通用深灰字，確保閱讀性 */
 
-            /* 統計卡片 (改為單色) */
-            --sum-bg-1: #FF9AA2; 
-            --sum-text-1: #ffffff;
-            --sum-bg-2: #B5EAD7; 
-            --sum-text-2: #4a8a76;
-            --sum-bg-3: #FFDAC1; 
-            --sum-text-3: #8a6b4e;
+            --primary: #6B9FBE;       
+            --primary-hover: #5a8ca8;
+            
+            --border: #C7D4DF;
+            --holiday-cell-bg: #C7D4DF; 
+
+            --accent: #C3D5BC;
+            --accent-text: #3e5238;
+
+            --holiday: #6B9FBE;
+            --weekend: #C3D5BC;
+
+            /* 統計卡片 */
+            --sum-bg-1: #6B9FBE; --sum-text-1: #fff;
+            --sum-bg-2: #C3D5BC; --sum-text-2: #3e5238;
+            --sum-bg-3: #C7D4DF; --sum-text-3: #555;
         }
 
-        /* --- 風格 2: 甜美 (配色組一) --- */
-        /* #ff8ba7, #33272a, #ffc6c7, #bae8e8, #001858, #8bd3dd */
-        body.theme-sweet {
-            --primary: #ff8ba7;       /* 亮粉紅 */
-            --primary-hover: #ffc6c7;
-            --accent: #bae8e8;        /* 淺青 */
-            --accent-text: #001858;   /* 深藍 */
-            --holiday: #ff8ba7;       
-            --holiday-bg: #fff5f7;    
-            --holiday-cell-bg: #ffeef2; /* 淺粉紅底 */
-            --weekend: #ffc6c7;       
-
-            --bg: #fdf5f6;            
-            --card-bg: #FFFFFF;
-            --text: #33272a;          /* 深褐色 */
-            --border: #ffc6c7;        
+        /* --- 第 2 組: 復古草綠 --- */
+        /* #C3CCD8, #E2CDCC, #E3E5B7, #96AB91 */
+        body.theme-2 {
+            --bg: #F0F4F8; /* 微調：原色 #C3CCD8 當背景太深，改淡一點，原色用於邊框 */
+            --border: #C3CCD8;
             
-            --bg-image: radial-gradient(#ffc6c7 2px, transparent 2px);
+            --primary: #96AB91;
+            --primary-hover: #7d9178;
 
-            /* 統計卡片 (單色) */
-            --sum-bg-1: #ff8ba7;      /* 粉紅 */
-            --sum-text-1: #33272a;
-            --sum-bg-2: #8bd3dd;      /* 藍青 */
-            --sum-text-2: #001858;
-            --sum-bg-3: #ffc6c7;      /* 淺粉 */
-            --sum-text-3: #33272a;
+            --holiday-cell-bg: #E2CDCC; /* 藕粉 */
+            --holiday: #b07d7b;
+
+            --accent: #E3E5B7;
+            --accent-text: #5c613b;
+            --weekend: #E2CDCC;
+
+            --sum-bg-1: #96AB91; --sum-text-1: #fff;
+            --sum-bg-2: #E3E5B7; --sum-text-2: #5c613b;
+            --sum-bg-3: #E2CDCC; --sum-text-3: #555;
         }
 
-        /* --- 風格 3: 文青 (配色組二) --- */
-        /* #bae8e8, #8bd3dd, #001858, #ff8e3c, #078080, #3da9fc, #90b4ce */
-        body.theme-wenqing {
-            --primary: #078080;       /* 藍綠色 (Teal) */
-            --primary-hover: #3da9fc;
-            --accent: #bae8e8;        /* 淺青 */
-            --accent-text: #001858;   /* 深藍 */
-            --holiday: #ff8e3c;       /* 橘色 */
-            --holiday-bg: #fffaf5;    
-            --holiday-cell-bg: #fff5eb; /* 淺橘底 */
-            --weekend: #3da9fc;       /* 亮藍 */
+        /* --- 第 3 組: 煙燻丹寧 --- */
+        /* #F9E1D6, #E2C4CB, #ABADCB, #5C7CA8 */
+        body.theme-3 {
+            --bg: #F9E1D6;
+            --border: #E2C4CB;
 
-            --bg: #f4fcfc;            /* 極淺青 */
-            --card-bg: #FFFFFF;
-            --text: #001858;          /* 深藍文字 */
-            --border: #90b4ce;        /* 灰藍邊框 */
-            
-            --bg-image: none;         /* 文青風無點點 */
+            --primary: #5C7CA8;
+            --primary-hover: #4a668a;
 
-            /* 統計卡片 (單色) */
-            --sum-bg-1: #3da9fc;      /* 藍 */
-            --sum-text-1: #ffffff;
-            --sum-bg-2: #078080;      /* 綠 */
-            --sum-text-2: #ffffff;
-            --sum-bg-3: #2D4766;      /* 橘 */
-            --sum-text-3: #ffffff;
+            --accent: #ABADCB;
+            --accent-text: #fff;
+
+            --holiday-cell-bg: #E2C4CB;
+            --holiday: #5C7CA8;
+            --weekend: #ABADCB;
+
+            --sum-bg-1: #5C7CA8; --sum-text-1: #fff;
+            --sum-bg-2: #ABADCB; --sum-text-2: #fff;
+            --sum-bg-3: #E2C4CB; --sum-text-3: #555;
+        }
+
+        /* --- 第 4 組: 清透天藍 --- */
+        /* #E9EDF2, #BFBDD1, #A9CCE1, #80AFD8 */
+        body.theme-4 {
+            --bg: #E9EDF2;
+            --border: #BFBDD1;
+
+            --primary: #80AFD8;
+            --primary-hover: #6b9ac2;
+
+            --accent: #A9CCE1;
+            --accent-text: #2c4a5e;
+
+            --holiday-cell-bg: #BFBDD1;
+            --holiday: #80AFD8;
+            --weekend: #A9CCE1;
+
+            --sum-bg-1: #80AFD8; --sum-text-1: #fff;
+            --sum-bg-2: #A9CCE1; --sum-text-2: #2c4a5e;
+            --sum-bg-3: #BFBDD1; --sum-text-3: #fff;
+        }
+
+        /* --- 第 5 組: 豆沙玫瑰 --- */
+        /* #EDE3D2, #E7CDBA, #E7BDB9, #B66D79 */
+        body.theme-5 {
+            --bg: #EDE3D2;
+            --border: #E7CDBA;
+
+            --primary: #B66D79;
+            --primary-hover: #9e5b66;
+
+            --accent: #E7BDB9;
+            --accent-text: #5e3b37;
+
+            --holiday-cell-bg: #E7BDB9;
+            --holiday: #B66D79;
+            --weekend: #E7CDBA;
+
+            --sum-bg-1: #B66D79; --sum-text-1: #fff;
+            --sum-bg-2: #E7BDB9; --sum-text-2: #5e3b37;
+            --sum-bg-3: #E7CDBA; --sum-text-3: #5e3b37;
+        }
+
+        /* --- 第 6 組: 薄荷土耳其 --- */
+        /* #F4F3E8, #E7BDC1, #C0E6E2, #61C6D8 */
+        body.theme-6 {
+            --bg: #F4F3E8;
+            --border: #E7BDC1; /* 淡粉紅邊框 */
+
+            --primary: #61C6D8;
+            --primary-hover: #4db3c5;
+
+            --accent: #C0E6E2;
+            --accent-text: #3a635f;
+
+            --holiday-cell-bg: #E7BDC1;
+            --holiday: #d17b83;
+            --weekend: #61C6D8;
+
+            --sum-bg-1: #61C6D8; --sum-text-1: #fff;
+            --sum-bg-2: #C0E6E2; --sum-text-2: #3a635f;
+            --sum-bg-3: #E7BDC1; --sum-text-3: #555;
+        }
+
+        /* --- 第 7 組: 活力珊瑚橘 --- */
+        /* #FDEAD8, #FEC5C0, #FDC192, #E090A2 */
+        body.theme-7 {
+            --bg: #FDEAD8;
+            --border: #FEC5C0;
+
+            --primary: #E090A2;
+            --primary-hover: #c97a8b;
+
+            --accent: #FDC192;
+            --accent-text: #6b422a;
+
+            --holiday-cell-bg: #FEC5C0;
+            --holiday: #E090A2;
+            --weekend: #FDC192;
+
+            --sum-bg-1: #E090A2; --sum-text-1: #fff;
+            --sum-bg-2: #FDC192; --sum-text-2: #6b422a;
+            --sum-bg-3: #FEC5C0; --sum-text-3: #555;
+        }
+
+        /* --- 第 8 組: 青瓷萊姆綠 --- */
+        /* #E6F3EB, #AED7C6, #CCE28D, #E7B6AB */
+        body.theme-8 {
+            --bg: #E6F3EB;
+            --border: #AED7C6;
+
+            --primary: #E7B6AB; /* 鮭魚粉跳色 */
+            --primary-hover: #d19e93;
+
+            --accent: #CCE28D;
+            --accent-text: #5a6636;
+
+            --holiday-cell-bg: #E7B6AB;
+            --holiday: #d68978;
+            --weekend: #CCE28D;
+
+            --sum-bg-1: #E7B6AB; --sum-text-1: #fff;
+            --sum-bg-2: #CCE28D; --sum-text-2: #5a6636;
+            --sum-bg-3: #AED7C6; --sum-text-3: #555;
+        }
+
+        /* --- 第 9 組: 莫蘭迪灰粉 --- */
+        /* #D8E4E3, #EBC5C6, #E0AA97, #96ABBE */
+        body.theme-9 {
+            --bg: #D8E4E3;
+            --border: #EBC5C6;
+
+            --primary: #96ABBE;
+            --primary-hover: #7d91a3;
+
+            --accent: #E0AA97;
+            --accent-text: #fff;
+
+            --holiday-cell-bg: #EBC5C6;
+            --holiday: #c98587;
+            --weekend: #E0AA97;
+
+            --sum-bg-1: #96ABBE; --sum-text-1: #fff;
+            --sum-bg-2: #E0AA97; --sum-text-2: #fff;
+            --sum-bg-3: #EBC5C6; --sum-text-3: #555;
+        }
+
+        /* --- 第 10 組: 霧霾紫羅蘭 --- */
+        /* #F1F2F6, #EDD3D3, #CBDCE2, #C7C6DF */
+        body.theme-10 {
+            --bg: #F1F2F6;
+            --border: #EDD3D3;
+
+            --primary: #C7C6DF;
+            --primary-hover: #aeadc9;
+
+            --accent: #CBDCE2;
+            --accent-text: #4a5c63;
+
+            --holiday-cell-bg: #EDD3D3;
+            --holiday: #b08d8d;
+            --weekend: #C7C6DF;
+
+            --sum-bg-1: #C7C6DF; --sum-text-1: #fff;
+            --sum-bg-2: #CBDCE2; --sum-text-2: #4a5c63;
+            --sum-bg-3: #EDD3D3; --sum-text-3: #555;
         }
 
 
@@ -103,8 +238,8 @@
             margin: 0;
             padding: 20px;
             color: var(--text);
-            background-image: var(--bg-image);
-            background-size: 30px 30px;
+            /* 移除點點背景，改為純色以符合色號搭配 */
+            background-image: none; 
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -123,7 +258,7 @@
         .card {
             background: var(--card-bg);
             padding: 25px;
-            border-radius: var(--radius);
+            border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             border: 2px solid var(--border);
             transition: border-color 0.3s, background-color 0.3s;
@@ -166,21 +301,33 @@
             padding-top: 15px; 
             border-top: 2px dashed var(--border); 
             font-size: 0.85em; 
-            line-height: 1.6; 
+            line-height: 1.8; 
             opacity: 0.9;
         }
         
-        /* 小提醒指示器 (動態變色) */
+        /* 小提醒指示器 */
         .indicator-holiday { 
+            display: inline-block;
             color: var(--holiday); 
-            background: var(--holiday-cell-bg); /* 確保這裡使用變數 */
-            padding: 0 4px; 
-            border-radius: 4px; 
+            background: var(--holiday-cell-bg); 
+            padding: 1px 6px; 
+            border-radius: 6px; 
             font-weight: bold;
+            font-size: 0.9em;
+            margin-right: 4px;
         }
-        .indicator-active { background: var(--accent); color: var(--accent-text); padding: 0 4px; border-radius: 4px; font-weight: bold; }
+        .indicator-active { 
+            display: inline-block;
+            background: var(--accent); 
+            color: var(--accent-text); 
+            padding: 1px 6px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-size: 0.9em;
+            margin-right: 4px;
+        }
 
-        /* 風格切換選單 (移動到小提醒下方) */
+        /* 風格切換選單 */
         .theme-switcher-container {
             margin-top: 15px;
             padding-top: 15px;
@@ -190,17 +337,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
+            gap: 5px;
         }
         
         #theme-select {
-            margin-left: 10px;
-            padding: 5px 10px;
+            width: 100%;
+            padding: 8px;
             border-radius: 10px;
             border: 2px solid var(--border);
             background-color: var(--bg);
             color: var(--text);
             outline: none;
             cursor: pointer;
+            font-size: 1em;
         }
 
 
@@ -285,7 +435,7 @@
         input[type="checkbox"]:checked { background-color: var(--holiday); border-color: var(--holiday); }
         input[type="checkbox"]:checked::after { content: '✔'; color: white; position: absolute; left: 3px; top: -1px; font-size: 14px;}
 
-        /* --- 底部統計 (單色背景) --- */
+        /* --- 底部統計 --- */
         .summary {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;
         }
@@ -293,11 +443,11 @@
             padding: 15px; border-radius: 15px; text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        /* 第一張卡片 (本週工時) */
+        /* 第一張卡片 (本週工時 - 用最深色) */
         .sum-card:nth-child(1) { background-color: var(--sum-bg-1); color: var(--sum-text-1); }
-        /* 第二張卡片 (距離 40H) */
+        /* 第二張卡片 (距離 40H - 用強調色) */
         .sum-card:nth-child(2) { background-color: var(--sum-bg-2); color: var(--sum-text-2); }
-        /* 第三張卡片 (週五下班) */
+        /* 第三張卡片 (週五下班 - 用次淺色) */
         .sum-card:nth-child(3) { background-color: var(--sum-bg-3); color: var(--sum-text-3); }
 
         .sum-val { font-size: 1.6em; font-weight: bold; margin-top: 5px; }
@@ -323,17 +473,24 @@
         
         <div class="reminder-box">
             <div style="margin-bottom:5px;">📅 <b>小提醒：</b></div>
-            • <span class="indicator-holiday">粉紅底</span> 是國定假日<br>
-            • <span class="indicator-active">綠色背景</span> 是正在編輯的週<br>
+            • <span class="indicator-holiday">假</span> 是國定假日<br>
+            • <span class="indicator-active">編輯中</span> 是正在編輯的週<br>
             • 系統會自動扣除 1 小時 (12:00-13:00)<br>
         </div>
 
         <div class="theme-switcher-container">
-            <label for="theme-select">🎨 風格：</label>
+            <div style="width:100%; text-align:left; font-weight:bold; margin-bottom:5px;">🎨 選擇風格：</div>
             <select id="theme-select" onchange="changeTheme(this.value)">
-                <option value="default">🌸 馬卡龍 (預設)</option>
-                <option value="sweet">🍭 甜美風</option>
-                <option value="wenqing">🌊 文青風</option>
+                <option value="default">1. 米灰藍調 (預設)</option>
+                <option value="theme-2">2. 復古草綠</option>
+                <option value="theme-3">3. 煙燻丹寧</option>
+                <option value="theme-4">4. 清透天藍</option>
+                <option value="theme-5">5. 豆沙玫瑰</option>
+                <option value="theme-6">6. 薄荷土耳其</option>
+                <option value="theme-7">7. 活力珊瑚橘</option>
+                <option value="theme-8">8. 青瓷萊姆綠</option>
+                <option value="theme-9">9. 莫蘭迪灰粉</option>
+                <option value="theme-10">10. 霧霾紫羅蘭</option>
             </select>
         </div>
     </div>
@@ -399,12 +556,12 @@
     }
 
     function applyTheme(theme) {
-        // 移除所有可能的風格 class
-        document.body.classList.remove('theme-sweet', 'theme-wenqing');
+        // 移除所有可能的風格 class (2-10)
+        document.body.className = ''; 
         
         // 如果不是預設，就加上對應的 class
         if (theme !== 'default') {
-            document.body.classList.add('theme-' + theme);
+            document.body.classList.add(theme);
         }
     }
 
