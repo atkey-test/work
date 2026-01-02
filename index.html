@@ -6,65 +6,71 @@
     <title>工時計算表</title>
     <style>
         /* =========================================
-           1. CSS 變數定義 (風格核心)
+           1. CSS 變數定義 (配色核心)
         ========================================= */
 
-        /* --- 風格 A: 馬卡龍 (預設 Original) --- */
+        /* --- 風格 A: 甜美 (使用第一組配色) --- */
+        /* #ff8ba7, #33272a, #ffc6c7, #bae8e8, #001858, #8bd3dd */
         :root {
-            --primary: #FF9AA2;       /* 柔和粉紅 (標題/按鈕) */
-            --primary-hover: #ff808b;
-            --accent: #B5EAD7;        /* 薄荷綠 (選取狀態/今天) */
-            --accent-text: #4a8a76;
-            --holiday: #FF6961;       /* 珊瑚紅 (假日文字) */
-            --holiday-bg: #FFF0F0;    /* 假日背景 (表格行) */
-            --holiday-cell-bg: #ffedea; /* 月曆假日背景 */
-            --weekend: #FFB74D;       /* 週末橘色 */
+            --primary: #ff8ba7;       /* 主色 (粉紅) */
+            --primary-hover: #ffc6c7;
             
-            --bg: #FFF9FA;            /* 背景色 */
-            --card-bg: #FFFFFF;       /* 卡片背景 */
-            --text: #6B5B5B;          /* 文字色 */
-            --border: #FFE5E5;        /* 邊框色 */
+            --text: #33272a;          /* 文字 (深褐) */
+            --bg: #FFF9FA;            /* 背景 (極淡粉) */
+            --card-bg: #FFFFFF;       /* 卡片白 */
+            --border: #ffc6c7;        /* 邊框 (淺粉) */
+
+            --accent: #bae8e8;        /* 強調色/選取週 (淺青) */
+            --accent-text: #001858;   /* 強調色上的文字 (深藍) */
+
+            --holiday: #ff8ba7;       /* 假日文字 */
+            --holiday-cell-bg: #fff0f5; /* 月曆假日背景 */
+            --weekend: #ff8e3c;       /* 週末 (借用橘色讓它明顯一點，或用深褐 #33272a) */
             
-            --radius: 20px;           /* 大圓角 */
-            --bg-image: radial-gradient(#ffeef0 2px, transparent 2px); /* 點點背景 */
+            --radius: 20px;
+            --bg-image: radial-gradient(#ffc6c7 2px, transparent 2px); /* 點點背景 */
+
+            /* 統計卡片顏色 */
+            --sum-bg-1: linear-gradient(135deg, #ff8ba7, #ffc6c7); /* 粉紅漸層 */
+            --sum-text-1: #33272a;
+            
+            --sum-bg-2: linear-gradient(135deg, #8bd3dd, #bae8e8); /* 藍青漸層 */
+            --sum-text-2: #001858;
+
+            --sum-bg-3: linear-gradient(135deg, #33272a, #554448); /* 深褐漸層 */
+            --sum-text-3: #ffffff;
         }
 
-        /* --- 風格 B: 文青風 (Hipster / Minimalist) --- */
+        /* --- 風格 B: 文青 (使用第二組配色) --- */
+        /* #bae8e8, #8bd3dd, #001858, #ff8e3c, #078080, #3da9fc, #90b4ce */
         body.theme-wenqing {
-            --primary: #738678;       /* 莫蘭迪綠 */
-            --primary-hover: #5e7063;
-            --accent: #D3C4B1;        /* 亞麻米 */
-            --accent-text: #54473A;   /* 深咖啡 */
-            --holiday: #A86358;       /* 豆沙紅 */
-            --holiday-bg: #F5F1EE;    /* 米白 */
-            --holiday-cell-bg: #EFEBE8;
-            --weekend: #BFA588;       /* 駝色 */
-
-            --bg: #F8F6F4;            /* 胚布色紙張感 */
+            --primary: #078080;       /* 主色 (藍綠/Teal) */
+            --primary-hover: #3da9fc;
+            
+            --text: #001858;          /* 文字 (深藍) */
+            --bg: #F0F8FF;            /* 背景 (極淡藍) */
             --card-bg: #FFFFFF;
-            --text: #5E5E5E;          /* 炭灰 */
-            --border: #E0DCD8;        /* 淺灰棕 */
-            --bg-image: none;         /* 文青風不使用點點背景，保持乾淨 */
+            --border: #90b4ce;        /* 邊框 (灰藍) */
+
+            --accent: #bae8e8;        /* 強調色/選取週 (淺青) */
+            --accent-text: #001858;   
+
+            --holiday: #ff8e3c;       /* 假日文字 (亮橘) */
+            --holiday-cell-bg: #fffbf0; /* 月曆假日背景 (淡黃) */
+            --weekend: #3da9fc;       /* 週末 (亮藍) */
+
+            --bg-image: none;         /* 文青風保持乾淨 */
+
+            /* 統計卡片顏色 */
+            --sum-bg-1: linear-gradient(135deg, #3da9fc, #90b4ce); /* 藍色漸層 */
+            --sum-text-1: #ffffff;
+
+            --sum-bg-2: linear-gradient(135deg, #078080, #bae8e8); /* 綠青漸層 */
+            --sum-text-2: #ffffff;
+
+            --sum-bg-3: linear-gradient(135deg, #ff8e3c, #ffd1a9); /* 橘色漸層 */
+            --sum-text-3: #001858;
         }
-
-        /* --- 風格 C: 深色模式 (Dark Mode) --- */
-        body.theme-dark {
-            --primary: #BB86FC;       /* 電紫 */
-            --primary-hover: #9F63D6;
-            --accent: #03DAC6;        /* 青綠 */
-            --accent-text: #000000;
-            --holiday: #CF6679;       /* 柔紅 */
-            --holiday-bg: #2C2224;    /* 深紅褐 */
-            --holiday-cell-bg: #3A2E30;
-            --weekend: #FFB74D;       /* 亮橘 */
-
-            --bg: #121212;            /* 純黑背景 */
-            --card-bg: #1E1E1E;       /* 深灰卡片 */
-            --text: #E0E0E0;          /* 淺灰白文字 */
-            --border: #333333;        /* 深灰邊框 */
-            --bg-image: none;         /* 深色模式保持乾淨 */
-        }
-
 
         /* =========================================
            2. 全域樣式
@@ -75,13 +81,13 @@
             margin: 0;
             padding: 20px;
             color: var(--text);
-            /* 使用變數設定背景圖，以便不同風格切換 */
             background-image: var(--bg-image);
             background-size: 30px 30px;
-            transition: background-color 0.3s, color 0.3s; /* 讓風格切換更滑順 */
+            /* 讓顏色切換平滑 */
+            transition: background-color 0.3s, color 0.3s; 
         }
 
-        /* 風格切換選單容器 */
+        /* 風格切換選單 */
         .theme-switcher-container {
             display: flex;
             justify-content: flex-end;
@@ -91,7 +97,6 @@
             color: var(--text);
         }
         
-        /* 風格切換下拉選單 */
         #theme-select {
             margin-left: 10px;
             padding: 5px 10px;
@@ -102,7 +107,6 @@
             outline: none;
             cursor: pointer;
         }
-
 
         .main-layout {
             display: grid;
@@ -122,7 +126,7 @@
             border-radius: var(--radius);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             border: 2px solid var(--border);
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: border-color 0.3s, background-color 0.3s;
         }
 
         /* --- 左側月曆 --- */
@@ -138,7 +142,7 @@
         .cal-head { font-size: 0.85em; opacity: 0.7; padding-bottom: 5px; font-weight: bold;}
         .cal-cell { 
             padding: 10px 2px; font-size: 0.9em; border-radius: 12px; position: relative; cursor: pointer;
-            border: 1px solid transparent; /* 預留邊框位置避免跳動 */
+            border: 1px solid transparent;
         }
         .cal-cell:hover { border-color: var(--primary); }
         
@@ -183,7 +187,7 @@
         .btn-google:hover { border-color: var(--primary); color: var(--primary); opacity: 1; }
         .btn-google img { width: 18px; height: 18px; }
 
-        /* 表格樣式優化 */
+        /* 表格樣式 */
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-bottom: 10px; }
         
         th { 
@@ -208,7 +212,7 @@
         .tag-holiday { font-size: 0.8em; padding: 3px 8px; background: var(--holiday); color: var(--card-bg); border-radius: 15px; white-space: nowrap; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
 
         /* 狀態顏色 */
-        tr.mode-holiday td { background-color: var(--holiday-bg); }
+        tr.mode-holiday td { background-color: var(--holiday-cell-bg); }
         tr.mode-leave td { background-color: var(--bg); }
         
         input { font-family: inherit; }
@@ -238,19 +242,20 @@
         input[type="checkbox"]:checked { background-color: var(--holiday); border-color: var(--holiday); }
         input[type="checkbox"]:checked::after { content: '✔'; color: white; position: absolute; left: 3px; top: -1px; font-size: 14px;}
 
+        /* --- 底部統計 (使用變數控制顏色) --- */
         .summary {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;
         }
         .sum-card {
-            padding: 15px; border-radius: 15px; color: white; text-align: center;
+            padding: 15px; border-radius: 15px; text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            /* 讓文字陰影稍微明顯一點，適應不同背景 */
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2); 
         }
-        /* 這裡的漸層背景比較難用單一變數替換，維持原樣，但調整文字顏色以適應深色模式 */
-        .bg-pink { background: linear-gradient(135deg, #FF9AA2, #FFB7B2); color: #fff;}
-        .bg-mint { background: linear-gradient(135deg, #B5EAD7, #95d6c0); color: #3e705d; }
-        .bg-yellow { background: linear-gradient(135deg, #FFDAC1, #FFDFD3); color: #8a6b4e; }
+        /* 第一張卡片 (本週工時) */
+        .sum-card:nth-child(1) { background: var(--sum-bg-1); color: var(--sum-text-1); }
+        /* 第二張卡片 (距離 40H) */
+        .sum-card:nth-child(2) { background: var(--sum-bg-2); color: var(--sum-text-2); }
+        /* 第三張卡片 (週五下班) */
+        .sum-card:nth-child(3) { background: var(--sum-bg-3); color: var(--sum-text-3); }
 
         .sum-val { font-size: 1.6em; font-weight: bold; margin-top: 5px; }
         .sum-lbl { font-size: 0.9em; opacity: 0.9; }
@@ -260,6 +265,11 @@
             font-size: 0.85em; margin-top: 15px;
         }
         .reset-btn:hover { color: var(--holiday); opacity: 1; text-decoration: underline; }
+
+        /* --- 小提醒指示器樣式 (動態變色) --- */
+        .indicator-holiday { color: var(--holiday); background: var(--holiday-cell-bg); padding: 0 4px; border-radius: 4px; }
+        .indicator-weekend { color: var(--weekend); }
+        .indicator-active { background: var(--accent); color: var(--accent-text); padding: 0 4px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -275,9 +285,9 @@
         
         <div style="margin-top:20px; padding-top:15px; border-top:2px dashed var(--border); font-size:0.85em; line-height:1.6; opacity: 0.8;">
             <div style="margin-bottom:5px;">📅 <b>小提醒：</b></div>
-            • <span style="color:var(--holiday); background:var(--holiday-cell-bg); padding:0 4px; border-radius:4px;">粉紅底</span> 是國定假日<br>
-            • <span style="color:var(--weekend);">橘字</span> 是週末 (六、日)<br>
-            • <span style="background:var(--accent); color:var(--accent-text); padding:0 4px; border-radius:4px;">綠色背景</span> 是正在編輯的週<br>
+            • <span class="indicator-holiday">粉紅底</span> 是國定假日<br>
+            • <span class="indicator-weekend">橘字</span> 是週末 (六、日)<br>
+            • <span class="indicator-active">綠色背景</span> 是正在編輯的週<br>
             • 系統會自動扣除 1 小時 (12:00-13:00)<br>
         </div>
     </div>
@@ -286,9 +296,8 @@
         <div class="theme-switcher-container">
             <label for="theme-select">🎨 風格：</label>
             <select id="theme-select" onchange="changeTheme(this.value)">
-                <option value="default">🌸 馬卡龍 (預設)</option>
+                <option value="default">🌸 甜美風 (預設)</option>
                 <option value="wenqing">☕ 文青風</option>
-                <option value="dark">🌙 深色模式</option>
             </select>
         </div>
 
@@ -324,15 +333,15 @@
         </table>
 
         <div class="summary">
-            <div class="sum-card bg-pink">
+            <div class="sum-card">
                 <div class="sum-lbl">本週工時</div>
                 <div class="sum-val" id="sumTotal">0.00</div>
             </div>
-            <div class="sum-card bg-mint">
+            <div class="sum-card">
                 <div class="sum-lbl">距離 40H</div>
                 <div class="sum-val" id="sumLeft">0.00</div>
             </div>
-            <div class="sum-card bg-yellow">
+            <div class="sum-card">
                 <div class="sum-lbl">週五下班</div>
                 <div class="sum-val" id="predict">--:--</div>
             </div>
@@ -345,20 +354,19 @@
 </div>
 
 <script>
-    // --- 0. 風格切換邏輯 (新增) ---
+    // --- 0. 風格切換邏輯 ---
     function changeTheme(theme) {
-        // 儲存選擇到 localStorage
         localStorage.setItem('worktime_theme', theme);
         applyTheme(theme);
     }
 
     function applyTheme(theme) {
         // 移除所有可能的風格 class
-        document.body.classList.remove('theme-wenqing', 'theme-dark');
+        document.body.classList.remove('theme-wenqing');
         
         // 如果不是預設，就加上對應的 class
-        if (theme !== 'default') {
-            document.body.classList.add('theme-' + theme);
+        if (theme === 'wenqing') {
+            document.body.classList.add('theme-wenqing');
         }
     }
 
@@ -392,7 +400,7 @@
 
     // --- 2. 初始化 ---
     window.onload = function() {
-        // (新增) 載入並套用風格設定
+        // 載入風格
         const savedTheme = localStorage.getItem('worktime_theme') || 'default';
         document.getElementById('theme-select').value = savedTheme;
         applyTheme(savedTheme);
